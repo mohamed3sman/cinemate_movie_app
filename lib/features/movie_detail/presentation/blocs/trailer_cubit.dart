@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class TrailerState extends Equatable {
@@ -92,6 +93,9 @@ class TrailerCubit extends Cubit<TrailerState> {
         ),
       );
 
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values);
+
       emit(
         TrailerState(
           videoKey: state.videoKey,
@@ -136,6 +140,8 @@ class TrailerCubit extends Cubit<TrailerState> {
 
   void closeTrailer() {
     state.controller?.dispose();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     emit(const TrailerState(isVisible: false, isMinimized: false));
   }
 

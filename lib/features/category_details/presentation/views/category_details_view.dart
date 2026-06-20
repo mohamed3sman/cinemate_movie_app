@@ -36,68 +36,73 @@ class CategoryDetailsView extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
         ),
-        body: BlocListener<CategoryCubit, CategoryState>(
-          listener: (context, state) {
-            if (state is CategoryError) {
-              CustomSnackBar.show(
-                context,
-                message: state.message,
-                isError: true,
-              );
-            }
-          },
-          child: BlocBuilder<CategoryCubit, CategoryState>(
-            builder: (context, state) {
-              return Skeletonizer(
-                enabled: state is CategoryLoading,
-                effect: ShimmerEffect(
-                  baseColor: Colors.grey[900]!,
-                  highlightColor: Colors.grey[800]!,
-                ),
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(24),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisExtent: 210,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: state is CategoryLoaded ? state.movies.length : 9,
-                  itemBuilder: (context, index) {
-                    final movie = state is CategoryLoaded
-                        ? state.movies[index]
-                        : const Movie(
-                            id: 1,
-                            title: 'Movie Title Loading',
-                            posterPath: '',
-                            backdropPath: '',
-                            releaseDate: '2024',
-                            overview: '',
-                            voteAverage: 0.0,
-                          );
-                    final heroTag = '${movie.id}_$categoryName';
-                    return MovieCard(
-                      movie: movie,
-                      heroTag: heroTag,
-                      onTap: () {
-                        if (state is CategoryLoaded) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MovieDetailView(
-                                movieId: movie.id,
-                                posterPath: movie.posterPath,
-                                heroTag: heroTag,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-              );
+        body: SafeArea(
+          child: BlocListener<CategoryCubit, CategoryState>(
+            listener: (context, state) {
+              if (state is CategoryError) {
+                CustomSnackBar.show(
+                  context,
+                  message: state.message,
+                  isError: true,
+                );
+              }
             },
+            child: BlocBuilder<CategoryCubit, CategoryState>(
+              builder: (context, state) {
+                return Skeletonizer(
+                  enabled: state is CategoryLoading,
+                  effect: ShimmerEffect(
+                    baseColor: Colors.grey[900]!,
+                    highlightColor: Colors.grey[800]!,
+                  ),
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(24),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisExtent: 210,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 16,
+                        ),
+                    itemCount: state is CategoryLoaded
+                        ? state.movies.length
+                        : 9,
+                    itemBuilder: (context, index) {
+                      final movie = state is CategoryLoaded
+                          ? state.movies[index]
+                          : const Movie(
+                              id: 1,
+                              title: 'Movie Title Loading',
+                              posterPath: '',
+                              backdropPath: '',
+                              releaseDate: '2024',
+                              overview: '',
+                              voteAverage: 0.0,
+                            );
+                      final heroTag = '${movie.id}_$categoryName';
+                      return MovieCard(
+                        movie: movie,
+                        heroTag: heroTag,
+                        onTap: () {
+                          if (state is CategoryLoaded) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MovieDetailView(
+                                  movieId: movie.id,
+                                  posterPath: movie.posterPath,
+                                  heroTag: heroTag,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

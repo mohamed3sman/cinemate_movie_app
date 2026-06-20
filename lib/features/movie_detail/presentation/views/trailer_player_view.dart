@@ -15,8 +15,8 @@ class TrailerPlayerView extends StatelessWidget {
       builder: (context, state) {
         if (state.controller == null) {
           return const Scaffold(
-            backgroundColor: Colors.black,
-            body: Center(child: CircularProgressIndicator()),
+            backgroundColor: AppColors.background,
+            body: SafeArea(child: Center(child: CircularProgressIndicator())),
           );
         }
 
@@ -46,17 +46,18 @@ class TrailerPlayerView extends StatelessWidget {
             ),
             builder: (context, player) {
               return Scaffold(
-                backgroundColor: Colors.black,
+                backgroundColor: AppColors.background,
                 body: Stack(
                   children: [
                     Center(
                       child: Hero(
                         tag: 'trailer_player',
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width * 9 / 16,
-                          decoration: const BoxDecoration(color: Colors.black),
-                          child: player,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: player,
+                          ),
                         ),
                       ),
                     ),
