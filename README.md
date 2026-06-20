@@ -113,10 +113,3 @@ Each feature is divided into:
 - **Debounced Searching:** Inside `home_cubit.dart`, the search function uses a custom `Timer` implementation to delay API requests until the user stops typing, reducing unnecessary API load.
 - **Error Handling:** `Dio` interceptors and `dartz` `Either` types are used heavily in the repository layer to catch network exceptions and pass them gracefully to the UI state.
 
----
-
-## 🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/movie_app/issues).
-
-## 📄 License
-This project is open-source and available under the [MIT License](LICENSE).
