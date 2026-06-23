@@ -69,6 +69,7 @@ class MovieDetailModel extends MovieDetail {
 
 class CastMemberModel extends CastMember {
   const CastMemberModel({
+    required super.id,
     required super.name,
     required super.role,
     required super.imageUrl,
@@ -76,6 +77,7 @@ class CastMemberModel extends CastMember {
 
   factory CastMemberModel.fromJson(Map<String, dynamic> json) {
     return CastMemberModel(
+      id: json['id'] ?? 0,
       name: json['name'] ?? '',
       role: json['character'] ?? '',
       imageUrl: json['profile_path'] ?? '',

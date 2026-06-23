@@ -10,5 +10,6 @@ class ApiConstants {
   static const String discoverMovies = '/discover/movie';
   static const int animationGenreId = 16;
   static String movieDetail(int id) => '/movie/$id';
+  static String personDetail(int id) => '/person/$id';
   static const String searchMovies = '/search/movie';
 }

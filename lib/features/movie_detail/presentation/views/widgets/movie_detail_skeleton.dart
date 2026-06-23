@@ -22,7 +22,8 @@ class MovieDetailSkeleton extends MovieDetail {
           revenue: 500000000,
           cast: List.generate(
             4,
-            (index) => const CastMember(
+            (index) => CastMember(
+              id: -(index + 1),
               name: 'Cast Name',
               role: 'Character Role',
               imageUrl: '',

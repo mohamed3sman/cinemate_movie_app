@@ -164,7 +164,7 @@ class MovieDetailView extends StatelessWidget {
                                   milliseconds: isLoaded ? 500 : 0,
                                 ),
                                 duration: const Duration(milliseconds: 600),
-                                child: MovieCastSection(cast: movie.cast),
+                                child: MovieCastSection(cast: movie.cast, movieId: movieId),
                               ),
                               const SizedBox(height: 32),
                               // Production section

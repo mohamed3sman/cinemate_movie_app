@@ -26,6 +26,12 @@ import 'features/category_details/domain/repositories/category_repository.dart';
 import 'features/category_details/domain/usecases/get_movies_by_category.dart';
 import 'features/category_details/presentation/blocs/category_cubit.dart';
 
+// Person Detail
+import 'features/person_detail/data/datasources/person_remote_data_source.dart';
+import 'features/person_detail/data/repositories/person_repository_impl.dart';
+import 'features/person_detail/domain/repositories/person_repository.dart';
+import 'features/person_detail/domain/usecases/get_person_detail.dart';
+import 'features/person_detail/presentation/blocs/person_detail_cubit.dart';
 
 
 final sl = GetIt.instance;
@@ -96,5 +102,22 @@ Future<void> init() async {
   // Data sources
   sl.registerLazySingleton<MovieDetailRemoteDataSource>(
     () => MovieDetailRemoteDataSourceImpl(dio: sl()),
+  );
+
+  // --- PERSON DETAIL ---
+  // Cubit
+  sl.registerFactory(() => PersonDetailCubit(getPersonDetailUseCase: sl()));
+  
+  // Use cases
+  sl.registerLazySingleton(() => GetPersonDetailUseCase(sl()));
+  
+  // Repository
+  sl.registerLazySingleton<PersonRepository>(
+    () => PersonRepositoryImpl(remoteDataSource: sl()),
+  );
+  
+  // Data sources
+  sl.registerLazySingleton<PersonRemoteDataSource>(
+    () => PersonRemoteDataSourceImpl(dio: sl()),
   );
 }
