@@ -65,9 +65,9 @@ class HomeView extends StatelessWidget {
                                 child: AppSearchBar(
                                   hintText: 'Search for a movie...',
                                   onChanged: (query) {
-                                    context
-                                        .read<HomeCubit>()
-                                        .searchMovies(query);
+                                    context.read<HomeCubit>().searchMovies(
+                                      query,
+                                    );
                                   },
                                 ),
                               ),
@@ -94,7 +94,6 @@ class HomeView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 20),
                               HomeHeaderCategoriesSection(),
                               const SizedBox(height: 50),
                               Builder(

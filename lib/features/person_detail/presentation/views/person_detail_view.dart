@@ -132,6 +132,7 @@ class PersonDetailView extends StatelessWidget {
             child: MovieHorizontalSection(
               title: 'Known For',
               movies: person.knownForMovies,
+              heroTagPrefix: 'person_${person.id}_',
             ),
           ),
         SizedBox(height: MediaQuery.paddingOf(context).bottom + 40),

@@ -10,12 +10,14 @@ class MovieHorizontalSection extends StatelessWidget {
   final String title;
   final List<Movie> movies;
   final bool isLoading;
+  final String? heroTagPrefix;
 
   const MovieHorizontalSection({
     super.key,
     required this.title,
     required this.movies,
     this.isLoading = false,
+    this.heroTagPrefix,
   });
 
   @override
@@ -46,7 +48,7 @@ class MovieHorizontalSection extends StatelessWidget {
                       voteAverage: 0,
                     )
                   : movies[index];
-              final heroTag = '${movie.id}_$title';
+              final heroTag = '${heroTagPrefix ?? ''}${movie.id}_$title';
               return FadeInSlide(
                 delay: Duration(milliseconds: 80 * index),
                 duration: const Duration(milliseconds: 500),
