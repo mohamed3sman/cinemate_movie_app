@@ -22,17 +22,36 @@ class MovieProductionSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             itemCount: companies.length,
             itemBuilder: (context, index) {
-              return Container(
-                margin: const EdgeInsets.only(right: 12),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white24),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Center(
-                  child: Text(
-                    companies[index],
-                    style: AppTextStyles.font12GreyRegular.copyWith(color: Colors.white),
+              return TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: Duration(milliseconds: 400 + (index * 100)),
+                curve: Curves.elasticOut,
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: value,
+                    child: Opacity(
+                      opacity: value.clamp(0.0, 1.0),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white24),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: Text(
+                      companies[index],
+                      style: AppTextStyles.font12GreyRegular.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               );

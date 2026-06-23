@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/core/animations/fade_in_slide.dart';
+import 'package:movie_app/core/animations/fade_slide_page_route.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
 import 'package:movie_app/core/theme/app_text_styles.dart';
 import 'package:movie_app/features/home/domain/entities/movie.dart';
@@ -32,23 +34,26 @@ class SearchResultsGrid extends StatelessWidget {
     }
 
     if (results.isEmpty && query.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 80),
-        child: Center(
-          child: Column(
-            children: [
-              Icon(
-                Icons.movie_filter_outlined,
-                color: AppColors.textSecondary.withValues(alpha: 0.5),
-                size: 64,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'No movies found for "$query"',
-                style: AppTextStyles.font14GreyRegular,
-                textAlign: TextAlign.center,
-              ),
-            ],
+      return FadeInSlide(
+        duration: const Duration(milliseconds: 400),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 80),
+          child: Center(
+            child: Column(
+              children: [
+                Icon(
+                  Icons.movie_filter_outlined,
+                  color: AppColors.textSecondary.withValues(alpha: 0.5),
+                  size: 64,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No movies found for "$query"',
+                  style: AppTextStyles.font14GreyRegular,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -59,9 +64,12 @@ class SearchResultsGrid extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${results.length} results found',
-            style: AppTextStyles.font14GreyRegular,
+          FadeInSlide(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              '${results.length} results found',
+              style: AppTextStyles.font14GreyRegular,
+            ),
           ),
           const SizedBox(height: 20),
           GridView.builder(
@@ -77,21 +85,26 @@ class SearchResultsGrid extends StatelessWidget {
             itemBuilder: (context, index) {
               final movie = results[index];
               final heroTag = '${movie.id}_search';
-              return MovieCard(
-                movie: movie,
-                heroTag: heroTag,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MovieDetailView(
-                        movieId: movie.id,
-                        posterPath: movie.posterPath,
-                        heroTag: heroTag,
+              return FadeInSlide(
+                delay: Duration(milliseconds: 50 * index),
+                duration: const Duration(milliseconds: 400),
+                beginOffset: const Offset(0, 0.2),
+                child: MovieCard(
+                  movie: movie,
+                  heroTag: heroTag,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      FadeSlidePageRoute(
+                        page: MovieDetailView(
+                          movieId: movie.id,
+                          posterPath: movie.posterPath,
+                          heroTag: heroTag,
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               );
             },
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/core/animations/fade_in_slide.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
 import 'package:movie_app/features/home/presentation/blocs/home_cubit.dart';
 import 'package:movie_app/features/home/presentation/blocs/home_state.dart';
@@ -42,78 +43,123 @@ class HomeView extends StatelessWidget {
                       baseColor: Colors.grey[900]!,
                       highlightColor: Colors.grey[800]!,
                     ),
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 24.0),
-                            child: AppSearchBar(
-                              hintText: 'Search for a movie...',
-                              onChanged: (query) {
-                                context.read<HomeCubit>().searchMovies(query);
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                          if (isSearchActive) ...[
-                            SearchResultsGrid(
-                              results: state.searchResults,
-                              isSearching: state.isSearching,
-                              query: state.searchQuery,
-                            ),
-                          ] else ...[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0,
-                              ),
-                              child: Text(
-                                'Categories',
-                                style: AppTextStyles.font18WhiteSemiBold,
-                              ),
-                            ),
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await context.read<HomeCubit>().loadMovies();
+                      },
+                      backgroundColor: AppColors.cardBackground,
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(vertical: 24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             const SizedBox(height: 20),
-                            HomeHeaderCategoriesSection(),
-                            const SizedBox(height: 50),
-                            Builder(
-                              builder: (context) {
-                                final popularMovies = state is HomeLoaded
-                                    ? state.popularMovies
-                                    : <Movie>[];
-                                final topRatedMovies = state is HomeLoaded
-                                    ? state.topRatedMovies
-                                    : <Movie>[];
-                                final trendingMovies = state is HomeLoaded
-                                    ? state.trendingMovies
-                                    : <Movie>[];
-
-                                return Column(
-                                  children: [
-                                    MovieHorizontalSection(
-                                      title: 'Most Popular',
-                                      movies: popularMovies,
-                                      isLoading: state is HomeLoading,
-                                    ),
-                                    const SizedBox(height: 32),
-                                    MovieHorizontalSection(
-                                      title: 'Most Rated',
-                                      movies: topRatedMovies,
-                                      isLoading: state is HomeLoading,
-                                    ),
-                                    const SizedBox(height: 32),
-                                    MovieHorizontalSection(
-                                      title: 'Trending',
-                                      movies: trendingMovies,
-                                      isLoading: state is HomeLoading,
-                                    ),
-                                  ],
-                                );
-                              },
+                            // Search bar slides down from top
+                            FadeInSlide(
+                              duration: const Duration(milliseconds: 500),
+                              beginOffset: const Offset(0, -0.3),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                                child: AppSearchBar(
+                                  hintText: 'Search for a movie...',
+                                  onChanged: (query) {
+                                    context
+                                        .read<HomeCubit>()
+                                        .searchMovies(query);
+                                  },
+                                ),
+                              ),
                             ),
+                            const SizedBox(height: 32),
+                            if (isSearchActive) ...[
+                              SearchResultsGrid(
+                                results: state.searchResults,
+                                isSearching: state.isSearching,
+                                query: state.searchQuery,
+                              ),
+                            ] else ...[
+                              // "Categories" title fades in
+                              FadeInSlide(
+                                delay: const Duration(milliseconds: 100),
+                                duration: const Duration(milliseconds: 500),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24.0,
+                                  ),
+                                  child: Text(
+                                    'Categories',
+                                    style: AppTextStyles.font18WhiteSemiBold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              HomeHeaderCategoriesSection(),
+                              const SizedBox(height: 50),
+                              Builder(
+                                builder: (context) {
+                                  final popularMovies = state is HomeLoaded
+                                      ? state.popularMovies
+                                      : <Movie>[];
+                                  final topRatedMovies = state is HomeLoaded
+                                      ? state.topRatedMovies
+                                      : <Movie>[];
+                                  final trendingMovies = state is HomeLoaded
+                                      ? state.trendingMovies
+                                      : <Movie>[];
+
+                                  return Column(
+                                    children: [
+                                      // Stagger each section entrance
+                                      FadeInSlide(
+                                        delay: const Duration(
+                                          milliseconds: 300,
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 600,
+                                        ),
+                                        child: MovieHorizontalSection(
+                                          title: 'Most Popular',
+                                          movies: popularMovies,
+                                          isLoading: state is HomeLoading,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 32),
+                                      FadeInSlide(
+                                        delay: const Duration(
+                                          milliseconds: 500,
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 600,
+                                        ),
+                                        child: MovieHorizontalSection(
+                                          title: 'Most Rated',
+                                          movies: topRatedMovies,
+                                          isLoading: state is HomeLoading,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 32),
+                                      FadeInSlide(
+                                        delay: const Duration(
+                                          milliseconds: 700,
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 600,
+                                        ),
+                                        child: MovieHorizontalSection(
+                                          title: 'Trending',
+                                          movies: trendingMovies,
+                                          isLoading: state is HomeLoading,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ),
                   );

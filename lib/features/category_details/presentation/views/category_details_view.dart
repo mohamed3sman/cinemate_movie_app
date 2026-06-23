@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:movie_app/core/animations/fade_in_slide.dart';
+import 'package:movie_app/core/animations/fade_slide_page_route.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
 import 'package:movie_app/core/theme/app_text_styles.dart';
 import 'package:movie_app/core/widgets/custom_snackbar.dart';
@@ -55,50 +57,66 @@ class CategoryDetailsView extends StatelessWidget {
                     baseColor: Colors.grey[900]!,
                     highlightColor: Colors.grey[800]!,
                   ),
-                  child: GridView.builder(
-                    padding: const EdgeInsets.all(24),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisExtent: 210,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 16,
-                        ),
-                    itemCount: state is CategoryLoaded
-                        ? state.movies.length
-                        : 9,
-                    itemBuilder: (context, index) {
-                      final movie = state is CategoryLoaded
-                          ? state.movies[index]
-                          : const Movie(
-                              id: 1,
-                              title: 'Movie Title Loading',
-                              posterPath: '',
-                              backdropPath: '',
-                              releaseDate: '2024',
-                              overview: '',
-                              voteAverage: 0.0,
-                            );
-                      final heroTag = '${movie.id}_$categoryName';
-                      return MovieCard(
-                        movie: movie,
-                        heroTag: heroTag,
-                        onTap: () {
-                          if (state is CategoryLoaded) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MovieDetailView(
-                                  movieId: movie.id,
-                                  posterPath: movie.posterPath,
-                                  heroTag: heroTag,
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await context.read<CategoryCubit>().loadCategoryMovies(
+                        genreId,
                       );
                     },
+                    backgroundColor: AppColors.cardBackground,
+                    color: Colors.white,
+                    child: GridView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(24),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisExtent: 210,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 16,
+                          ),
+                      itemCount: state is CategoryLoaded
+                          ? state.movies.length
+                          : 9,
+                      itemBuilder: (context, index) {
+                        final movie = state is CategoryLoaded
+                            ? state.movies[index]
+                            : const Movie(
+                                id: 1,
+                                title: 'Movie Title Loading',
+                                posterPath: '',
+                                backdropPath: '',
+                                releaseDate: '2024',
+                                overview: '',
+                                voteAverage: 0.0,
+                              );
+                        final heroTag = '${movie.id}_$categoryName';
+                        // Staggered entrance: each card appears with increasing delay
+                        return FadeInSlide(
+                          delay: Duration(milliseconds: 60 * index),
+                          duration: const Duration(milliseconds: 450),
+                          beginOffset: const Offset(0, 0.2),
+                          child: MovieCard(
+                            movie: movie,
+                            heroTag: heroTag,
+                            onTap: () {
+                              if (state is CategoryLoaded) {
+                                Navigator.push(
+                                  context,
+                                  FadeSlidePageRoute(
+                                    page: MovieDetailView(
+                                      movieId: movie.id,
+                                      posterPath: movie.posterPath,
+                                      heroTag: heroTag,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               },

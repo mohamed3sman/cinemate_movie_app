@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/core/animations/fade_in_slide.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
 import 'package:movie_app/core/theme/app_text_styles.dart';
-import 'package:movie_app/core/widgets/app_gradient_button.dart';
+import 'package:movie_app/core/widgets/gradient_border_container.dart';
 import 'package:movie_app/core/widgets/custom_snackbar.dart';
 import 'package:movie_app/features/movie_detail/presentation/blocs/movie_detail_cubit.dart';
 import 'package:movie_app/features/movie_detail/presentation/blocs/movie_detail_state.dart';
@@ -68,99 +69,187 @@ class MovieDetailView extends StatelessWidget {
                         ? movie.posterPath
                         : movie.backdropPath);
 
+              final isLoaded = state is MovieDetailLoaded;
+
               return SafeArea(
-                child: CustomScrollView(
-                  slivers: [
-                    MovieDetailAppBar(
-                      title: movie.title,
-                      imagePath: imageToShow,
-                      heroTag: heroTag ?? movieId.toString(),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Skeletonizer(
-                        enabled: state is MovieDetailLoading,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 24),
-                            MovieInfoSection(
-                              title: movie.title,
-                              tagline: movie.tagline,
-                              studio: movie.studio,
-                              voteAverage: movie.voteAverage,
-                            ),
-                            const SizedBox(height: 16),
-                            MovieMetadataRow(
-                              releaseDate: movie.releaseDate,
-                              runtime: movie.runtime,
-                            ),
-                            const SizedBox(height: 16),
-                            MovieGenresList(genres: movie.genres),
-                            const SizedBox(height: 24),
-                            const MovieSectionTitle(title: 'Storyline'),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0,
-                              ),
-                              child: Text(
-                                movie.overview,
-                                style: AppTextStyles.font13GreyRegular.copyWith(
-                                  height: 1.6,
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await context.read<MovieDetailCubit>().loadMovieDetail(
+                      movieId,
+                    );
+                  },
+                  backgroundColor: AppColors.cardBackground,
+                  color: Colors.white,
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      MovieDetailAppBar(
+                        title: movie.title,
+                        imagePath: imageToShow,
+                        heroTag: heroTag ?? movieId.toString(),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Skeletonizer(
+                          enabled: state is MovieDetailLoading,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 24),
+                              // Info section fades in first
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 100 : 0,
                                 ),
-                                maxLines: 10,
-                                overflow: TextOverflow.ellipsis,
+                                duration: const Duration(milliseconds: 500),
+                                child: MovieInfoSection(
+                                  title: movie.title,
+                                  tagline: movie.tagline,
+                                  studio: movie.studio,
+                                  voteAverage: movie.voteAverage,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 32),
-                            MovieCastSection(cast: movie.cast),
-                            const SizedBox(height: 32),
-                            MovieProductionSection(
-                              companies: movie.productionCompanies,
-                            ),
-                            const SizedBox(height: 32),
-                            MovieFinancialsSection(
-                              budget: movie.budget,
-                              revenue: movie.revenue,
-                            ),
-                            const SizedBox(height: 40),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0,
+                              const SizedBox(height: 16),
+                              // Metadata row slides in
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 200 : 0,
+                                ),
+                                duration: const Duration(milliseconds: 500),
+                                beginOffset: const Offset(-0.15, 0),
+                                child: MovieMetadataRow(
+                                  releaseDate: movie.releaseDate,
+                                  runtime: movie.runtime,
+                                ),
                               ),
-                              child: AppGradientButton(
-                                text: 'Watch now',
-                                onPressed: () {
-                                  if (movie.trailerKey != null) {
-                                    context.read<TrailerCubit>().playTrailer(
-                                      movie.trailerKey!,
-                                    );
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => TrailerPlayerView(
-                                          videoKey: movie.trailerKey!,
-                                        ),
+                              const SizedBox(height: 16),
+                              // Genres slide in from left
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 300 : 0,
+                                ),
+                                duration: const Duration(milliseconds: 500),
+                                beginOffset: const Offset(-0.15, 0),
+                                child: MovieGenresList(genres: movie.genres),
+                              ),
+                              const SizedBox(height: 24),
+                              // Storyline section
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 400 : 0,
+                                ),
+                                duration: const Duration(milliseconds: 500),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const MovieSectionTitle(title: 'Storyline'),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24.0,
                                       ),
-                                    );
-                                  } else {
-                                    CustomSnackBar.show(
-                                      context,
-                                      message:
-                                          'No trailer available for this movie',
-                                      isError: true,
-                                    );
-                                  }
-                                },
+                                      child: Text(
+                                        movie.overview,
+                                        style: AppTextStyles.font13GreyRegular
+                                            .copyWith(height: 1.6),
+                                        maxLines: 10,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.paddingOf(context).bottom + 40,
-                            ),
-                          ],
+                              const SizedBox(height: 32),
+                              // Cast section slides up
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 500 : 0,
+                                ),
+                                duration: const Duration(milliseconds: 600),
+                                child: MovieCastSection(cast: movie.cast),
+                              ),
+                              const SizedBox(height: 32),
+                              // Production section
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 600 : 0,
+                                ),
+                                duration: const Duration(milliseconds: 600),
+                                child: MovieProductionSection(
+                                  companies: movie.productionCompanies,
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+                              // Financials section
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 700 : 0,
+                                ),
+                                duration: const Duration(milliseconds: 600),
+                                child: MovieFinancialsSection(
+                                  budget: movie.budget,
+                                  revenue: movie.revenue,
+                                ),
+                              ),
+                              const SizedBox(height: 40),
+                              // Watch button slides up last with bounce
+                              FadeInSlide(
+                                delay: Duration(
+                                  milliseconds: isLoaded ? 800 : 0,
+                                ),
+                                duration: const Duration(milliseconds: 700),
+                                beginOffset: const Offset(0, 0.3),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24.0,
+                                  ),
+                                  child: GradientBorderContainer(
+                                    onTap: () {
+                                      if (movie.trailerKey != null) {
+                                        context
+                                            .read<TrailerCubit>()
+                                            .playTrailer(movie.trailerKey!);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TrailerPlayerView(
+                                                  videoKey: movie.trailerKey!,
+                                                ),
+                                          ),
+                                        );
+                                      } else {
+                                        CustomSnackBar.show(
+                                          context,
+                                          message:
+                                              'No trailer available for this movie',
+                                          isError: true,
+                                        );
+                                      }
+                                    },
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Watch now',
+                                        style: AppTextStyles.font16WhiteRegular
+                                            .copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.paddingOf(context).bottom + 10,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

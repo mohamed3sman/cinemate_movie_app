@@ -46,23 +46,55 @@ class MovieInfoSection extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            children: [
-              Row(
-                children: [
-                  const Icon(Icons.star, color: Colors.amber, size: 18),
-                  const SizedBox(width: 4),
-                  Text(
-                    voteAverage.toStringAsFixed(1),
-                    style: AppTextStyles.font15WhiteBold,
+          // Animated star rating
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.elasticOut,
+            builder: (context, value, child) {
+              return Transform.scale(
+                scale: value,
+                child: child,
+              );
+            },
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: 1.0),
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeOut,
+                      builder: (context, value, child) {
+                        return Transform.rotate(
+                          angle: (1 - value) * 1.5,
+                          child: Opacity(
+                            opacity: value,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      voteAverage.toStringAsFixed(1),
+                      style: AppTextStyles.font15WhiteBold,
+                    ),
+                  ],
+                ),
+                Text(
+                  'Rating',
+                  style: AppTextStyles.font12GreyRegular.copyWith(
+                    fontSize: 11,
                   ),
-                ],
-              ),
-              Text(
-                'Rating',
-                style: AppTextStyles.font12GreyRegular.copyWith(fontSize: 11),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

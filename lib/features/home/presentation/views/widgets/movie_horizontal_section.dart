@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/core/animations/fade_in_slide.dart';
+import 'package:movie_app/core/animations/fade_slide_page_route.dart';
 import 'package:movie_app/core/theme/app_text_styles.dart';
 import 'package:movie_app/features/home/domain/entities/movie.dart';
 import 'package:movie_app/features/home/presentation/views/widgets/movie_card.dart';
@@ -45,27 +47,32 @@ class MovieHorizontalSection extends StatelessWidget {
                     )
                   : movies[index];
               final heroTag = '${movie.id}_$title';
-              return Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: SizedBox(
-                  width: 135,
-                  child: MovieCard(
-                    movie: movie,
-                    heroTag: heroTag,
-                    onTap: () {
-                      if (!isLoading) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MovieDetailView(
-                              movieId: movie.id,
-                              posterPath: movie.posterPath,
-                              heroTag: heroTag,
+              return FadeInSlide(
+                delay: Duration(milliseconds: 80 * index),
+                duration: const Duration(milliseconds: 500),
+                beginOffset: const Offset(0.15, 0),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: SizedBox(
+                    width: 135,
+                    child: MovieCard(
+                      movie: movie,
+                      heroTag: heroTag,
+                      onTap: () {
+                        if (!isLoading) {
+                          Navigator.push(
+                            context,
+                            FadeSlidePageRoute(
+                              page: MovieDetailView(
+                                movieId: movie.id,
+                                posterPath: movie.posterPath,
+                                heroTag: heroTag,
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
               );

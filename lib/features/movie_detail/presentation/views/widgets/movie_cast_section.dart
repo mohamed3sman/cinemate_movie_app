@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/core/animations/fade_in_slide.dart';
 import 'package:movie_app/features/movie_detail/domain/entities/movie_detail.dart';
 import 'package:movie_app/features/movie_detail/presentation/views/widgets/cast_card.dart';
 import 'movie_section_title.dart';
@@ -22,14 +23,19 @@ class MovieCastSection extends StatelessWidget {
             itemCount: (cast.length / 2).ceil(),
             itemBuilder: (context, index) {
               final member = cast[index * 2];
-              return Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: SizedBox(
-                  width: 200,
-                  child: CastCard(
-                    name: member.name,
-                    role: member.role,
-                    imageUrl: member.imageUrl,
+              return FadeInSlide(
+                delay: Duration(milliseconds: 80 * index),
+                duration: const Duration(milliseconds: 450),
+                beginOffset: const Offset(0.2, 0),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: SizedBox(
+                    width: 200,
+                    child: CastCard(
+                      name: member.name,
+                      role: member.role,
+                      imageUrl: member.imageUrl,
+                    ),
                   ),
                 ),
               );
@@ -45,14 +51,19 @@ class MovieCastSection extends StatelessWidget {
             itemCount: cast.length ~/ 2,
             itemBuilder: (context, index) {
               final member = cast[index * 2 + 1];
-              return Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: SizedBox(
-                  width: 200,
-                  child: CastCard(
-                    name: member.name,
-                    role: member.role,
-                    imageUrl: member.imageUrl,
+              return FadeInSlide(
+                delay: Duration(milliseconds: 80 * index + 150),
+                duration: const Duration(milliseconds: 450),
+                beginOffset: const Offset(0.2, 0),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: SizedBox(
+                    width: 200,
+                    child: CastCard(
+                      name: member.name,
+                      role: member.role,
+                      imageUrl: member.imageUrl,
+                    ),
                   ),
                 ),
               );
