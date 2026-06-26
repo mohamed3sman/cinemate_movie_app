@@ -26,16 +26,16 @@ A standout feature of this app is the **Global Mini Player**, which allows users
 Here is a glimpse of the Cinemate app's intuitive and beautiful user interface:
 
 <div align="center">
-  <img src="assets/mockups/splash.jpg" alt="Splash Screen" height="300" width="24%"/>
-  <img src="assets/mockups/home.jpg" alt="Home Screen" height="300" width="24%"/>
-  <img src="assets/mockups/movies.jpg" alt="Movies Screen" height="300" width="24%"/>
-  <img src="assets/mockups/animes.jpg" alt="Animes Screen" height="300" width="24%"/>
+  <img src="assets/mockups/splash.jpg" alt="Splash Screen" height="300"/>
+  <img src="assets/mockups/home.jpg" alt="Home Screen" height="300"/>
+  <img src="assets/mockups/movies.jpg" alt="Movies Screen" height="300"/>
+  <img src="assets/mockups/animes.jpg" alt="Animes Screen" height="300"/>
 </div>
 <br>
 <div align="center">
-  <img src="assets/mockups/search_film.png" alt="Search" height="300" width="28%"/>
-  <img src="assets/mockups/movie_details.png" alt="Movie Details" height="300" width="28%"/>
-  <img src="assets/mockups/actor_details.png" alt="Actor Details" height="300" width="28%"/>
+  <img src="assets/mockups/search_film.png" alt="Search" height="300"/>
+  <img src="assets/mockups/movie_details.png" alt="Movie Details" height="300"/>
+  <img src="assets/mockups/actor_details.png" alt="Actor Details" height="300"/>
 </div>
 
 ---
