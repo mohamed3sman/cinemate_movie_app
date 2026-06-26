@@ -21,6 +21,25 @@ A standout feature of this app is the **Global Mini Player**, which allows users
 
 ---
 
+## 📸 App Gallery (Screenshots)
+
+Here is a glimpse of the Cinemate app's intuitive and beautiful user interface:
+
+<div align="center">
+  <img src="assets/mockups/splash.jpg" alt="Splash Screen" height="300" width="24%"/>
+  <img src="assets/mockups/home.jpg" alt="Home Screen" height="300" width="24%"/>
+  <img src="assets/mockups/movies.jpg" alt="Movies Screen" height="300" width="24%"/>
+  <img src="assets/mockups/animes.jpg" alt="Animes Screen" height="300" width="24%"/>
+</div>
+<br>
+<div align="center">
+  <img src="assets/mockups/search_film.png" alt="Search" height="300" width="28%"/>
+  <img src="assets/mockups/movie_details.png" alt="Movie Details" height="300" width="28%"/>
+  <img src="assets/mockups/actor_details.png" alt="Actor Details" height="300" width="28%"/>
+</div>
+
+---
+
 ## ✨ Features
 
 - **🎬 Global Floating Mini Player:** Watch YouTube trailers in a draggable, persistent PiP overlay that stays active while you browse other movies.
@@ -112,4 +131,4 @@ Each feature is divided into:
 - **State Persistence:** The `GlobalMiniPlayer` utilizes a customized `OverlayEntry` integrated with `BlocBuilder` to ensure the YouTube player controller lifecycle is preserved and doesn't crash during route pops.
 - **Debounced Searching:** Inside `home_cubit.dart`, the search function uses a custom `Timer` implementation to delay API requests until the user stops typing, reducing unnecessary API load.
 - **Error Handling:** `Dio` interceptors and `dartz` `Either` types are used heavily in the repository layer to catch network exceptions and pass them gracefully to the UI state.
-
+- **Clean Architecture Enforcement:** Data and UI layers are completely decoupled by Domain entities, making the codebase highly testable and robust for future scaling.
