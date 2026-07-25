@@ -7,13 +7,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:movie_app/main.dart';
+import 'package:movie_app/app.dart';
+import 'package:movie_app/core/config/app_config.dart';
+import 'package:movie_app/core/config/flavor.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MovieApp());
+    await tester.pumpWidget(
+      MovieApp(
+        config: AppConfig(
+          flavor: Flavor.development,
+          appName: 'Cinemate',
+          baseUrl: 'https://api.com',
+        ),
+      ),
+    );
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

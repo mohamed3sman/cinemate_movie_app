@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:movie_app/core/config/app_config.dart';
 
 // Home
 import 'features/home/data/datasources/home_remote_data_source.dart';
@@ -33,12 +34,13 @@ import 'features/person_detail/domain/repositories/person_repository.dart';
 import 'features/person_detail/domain/usecases/get_person_detail.dart';
 import 'features/person_detail/presentation/blocs/person_detail_cubit.dart';
 
-
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // --- CORE ---
-  sl.registerLazySingleton(() => Dio());
+  sl.registerLazySingleton(
+    () => Dio(BaseOptions(baseUrl: AppConfig.instance.baseUrl)),
+  );
 
   // --- CATEGORY DETAILS ---
   // Cubit
@@ -57,8 +59,6 @@ Future<void> init() async {
     () => CategoryRemoteDataSourceImpl(dio: sl()),
   );
 
-
-
   // --- HOME ---
   // Cubit
   sl.registerFactory(
@@ -69,18 +69,18 @@ Future<void> init() async {
       searchMoviesUseCase: sl(),
     ),
   );
-  
+
   // Use cases
   sl.registerLazySingleton(() => GetPopularMoviesUseCase(sl()));
   sl.registerLazySingleton(() => GetTopRatedMoviesUseCase(sl()));
   sl.registerLazySingleton(() => GetTrendingMoviesUseCase(sl()));
   sl.registerLazySingleton(() => SearchMoviesUseCase(sl()));
-  
+
   // Repository
   sl.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(remoteDataSource: sl()),
   );
-  
+
   // Data sources
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(dio: sl()),
@@ -90,15 +90,15 @@ Future<void> init() async {
   // Cubit
   sl.registerFactory(() => MovieDetailCubit(getMovieDetailUseCase: sl()));
   sl.registerLazySingleton(() => TrailerCubit());
-  
+
   // Use cases
   sl.registerLazySingleton(() => GetMovieDetailUseCase(sl()));
-  
+
   // Repository
   sl.registerLazySingleton<MovieDetailRepository>(
     () => MovieDetailRepositoryImpl(remoteDataSource: sl()),
   );
-  
+
   // Data sources
   sl.registerLazySingleton<MovieDetailRemoteDataSource>(
     () => MovieDetailRemoteDataSourceImpl(dio: sl()),
@@ -107,15 +107,15 @@ Future<void> init() async {
   // --- PERSON DETAIL ---
   // Cubit
   sl.registerFactory(() => PersonDetailCubit(getPersonDetailUseCase: sl()));
-  
+
   // Use cases
   sl.registerLazySingleton(() => GetPersonDetailUseCase(sl()));
-  
+
   // Repository
   sl.registerLazySingleton<PersonRepository>(
     () => PersonRepositoryImpl(remoteDataSource: sl()),
   );
-  
+
   // Data sources
   sl.registerLazySingleton<PersonRemoteDataSource>(
     () => PersonRemoteDataSourceImpl(dio: sl()),

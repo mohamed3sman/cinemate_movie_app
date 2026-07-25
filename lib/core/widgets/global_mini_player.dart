@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/app.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
 import 'package:movie_app/features/movie_detail/presentation/blocs/trailer_cubit.dart';
 import 'package:movie_app/features/movie_detail/presentation/views/trailer_player_view.dart';
-import 'package:movie_app/main.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class GlobalMiniPlayer extends StatefulWidget {
@@ -78,14 +78,14 @@ class _GlobalMiniPlayerState extends State<GlobalMiniPlayer> {
                                             .maximizeTrailer();
                                         MovieApp.navigatorKey.currentState
                                             ?.push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                TrailerPlayerView(
-                                              videoKey:
-                                                  overlayState.videoKey!,
-                                            ),
-                                          ),
-                                        );
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TrailerPlayerView(
+                                                      videoKey: overlayState
+                                                          .videoKey!,
+                                                    ),
+                                              ),
+                                            );
                                       }
                                     },
                                     child: Hero(
@@ -93,11 +93,11 @@ class _GlobalMiniPlayerState extends State<GlobalMiniPlayer> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: Colors.black,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           border: Border.all(
-                                            color:
-                                                AppColors.primary.withValues(
+                                            color: AppColors.primary.withValues(
                                               alpha: 0.3,
                                             ),
                                             width: 1,
@@ -121,9 +121,10 @@ class _GlobalMiniPlayerState extends State<GlobalMiniPlayer> {
                                                 overlayState.isMinimized)
                                               YoutubePlayer(
                                                 key: ValueKey(
-                                                    overlayState.videoKey),
-                                                controller: overlayState
-                                                    .controller!,
+                                                  overlayState.videoKey,
+                                                ),
+                                                controller:
+                                                    overlayState.controller!,
                                                 showVideoProgressIndicator:
                                                     false,
                                                 onReady: () {
@@ -132,16 +133,17 @@ class _GlobalMiniPlayerState extends State<GlobalMiniPlayer> {
                                                       Duration.zero) {
                                                     overlayState.controller!
                                                         .seekTo(
-                                                      overlayState
-                                                          .lastPosition,
-                                                    );
+                                                          overlayState
+                                                              .lastPosition,
+                                                        );
                                                   }
                                                   overlayState.controller!
                                                       .play();
                                                 },
                                               ),
                                             Container(
-                                                color: Colors.transparent),
+                                              color: Colors.transparent,
+                                            ),
                                             Positioned(
                                               top: 6,
                                               right: 6,
@@ -150,13 +152,12 @@ class _GlobalMiniPlayerState extends State<GlobalMiniPlayer> {
                                                     .read<TrailerCubit>()
                                                     .closeTrailer(),
                                                 child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(6),
+                                                  padding: const EdgeInsets.all(
+                                                    6,
+                                                  ),
                                                   decoration: BoxDecoration(
                                                     color: Colors.black
-                                                        .withValues(
-                                                      alpha: 0.7,
-                                                    ),
+                                                        .withValues(alpha: 0.7),
                                                     shape: BoxShape.circle,
                                                     border: Border.all(
                                                       color: Colors.white24,

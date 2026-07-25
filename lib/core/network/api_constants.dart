@@ -1,5 +1,7 @@
+import 'package:movie_app/core/config/app_config.dart';
+
 class ApiConstants {
-  static const String baseUrl = 'https://api.themoviedb.org/3';
+  static String get baseUrl => AppConfig.instance.baseUrl;
   static const String apiKey = '5f89d0402ba31e6c326c7a7e81f6b164';
   static const String imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
 

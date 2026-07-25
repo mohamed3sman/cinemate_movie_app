@@ -34,6 +34,15 @@ class HomeView extends StatelessWidget {
             body: SafeArea(
               child: BlocBuilder<HomeCubit, HomeState>(
                 builder: (context, state) {
+                  if (state is HomeError) {
+                    return Center(
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        'Error fetching movies beacause development flavor is for testing only.',
+                        style: AppTextStyles.font16WhiteRegular,
+                      ),
+                    );
+                  }
                   final isSearchActive =
                       state is HomeLoaded && state.searchQuery.isNotEmpty;
 
