@@ -49,6 +49,7 @@ Here is a glimpse of the Cinemate app's intuitive and beautiful user interface:
 - **⏳ Skeleton Loading States:** Beautiful shimmer effects (using `skeletonizer`) during API calls to improve perceived performance.
 - **💾 Image Caching:** Seamless image loading and local caching for optimized bandwidth usage using `cached_network_image`.
 - **🗃️ Offline Capabilities:** Configured with `Hive` for fast, lightweight local storage.
+- **🌍 Multi-Environment Flavors:** Ready for enterprise deployment with separate Development (`development`) and Production (`production`) flavors, complete with custom app icons, bundle suffixes (`.dev` / `.prod`), and dedicated entry points (`main_development.dart` / `main_production.dart`).
 
 ---
 
@@ -59,12 +60,16 @@ This project follows the **Clean Architecture** pattern to separate concerns and
 ```text
 lib/
 ├── core/               # App-wide constants, networking, errors, and UI themes
+│   ├── config/         # Environment configuration (AppConfig, Flavor definitions)
 ├── features/           # Feature-based modular architecture
 │   ├── home/           # Data, Domain, and Presentation for Home Screen
 │   ├── movie_detail/   # Data, Domain, and Presentation for Details & Trailers
 │   └── category/       # Data, Domain, and Presentation for Genre filtering
+├── app.dart            # Main widget setup and routing
 ├── injection_container.dart  # Dependency Injection setup using get_it
-└── main.dart           # App entry point
+├── main.dart           # Bootstrap and common initialization
+├── main_development.dart     # Development flavor entry point
+└── main_production.dart      # Production flavor entry point
 ```
 
 Each feature is divided into:
@@ -120,14 +125,22 @@ Each feature is divided into:
    ```
 
 4. **Run the App:**
-   ```bash
-   flutter run
-   ```
+   You can run the app using either the Development or Production flavor:
+
+   - **Development Flavor:**
+     ```bash
+     flutter run -t lib/main_development.dart --flavor development
+     ```
+   - **Production Flavor:**
+     ```bash
+     flutter run -t lib/main_production.dart --flavor production
+     ```
 
 ---
 
 ## 💡 Key Implementations Highlight for Code Reviewers
 
+- **Environment Flavors & Bootstrapping:** Clean separation of environments using `AppConfig` and native product flavors in Android and iOS. Each flavor maintains separate app names, package suffixes (`.dev` / `.prod`), API base URLs, and custom app icons generated via `flutter_launcher_icons`.
 - **State Persistence:** The `GlobalMiniPlayer` utilizes a customized `OverlayEntry` integrated with `BlocBuilder` to ensure the YouTube player controller lifecycle is preserved and doesn't crash during route pops.
 - **Debounced Searching:** Inside `home_cubit.dart`, the search function uses a custom `Timer` implementation to delay API requests until the user stops typing, reducing unnecessary API load.
 - **Error Handling:** `Dio` interceptors and `dartz` `Either` types are used heavily in the repository layer to catch network exceptions and pass them gracefully to the UI state.
